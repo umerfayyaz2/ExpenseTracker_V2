@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ExpenseTrackerV2}",
+            "name": "Debug ExpenseTrackerV2",
+            "target": "ExpenseTrackerV2",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug ExpenseTrackerV2"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:ExpenseTrackerV2}",
+            "name": "Release ExpenseTrackerV2",
+            "target": "ExpenseTrackerV2",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release ExpenseTrackerV2"
+        }
+    ]
+}
