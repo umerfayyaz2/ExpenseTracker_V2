@@ -1,6 +1,6 @@
 import Foundation
 
-// Entry point for the ExpenseTrackerV2 application
-// app flow will be wired later
+let viewModel = ExpenseViewModel()  // creating instance of ExpenseViewModel
+let consoleView = ConsoleView(viewModel: viewModel)  // injecting view model instance to ConsoleView
 
-print("ExpenseTracker v2.0 initialized!")
+consoleView.start()  // starting the console app
