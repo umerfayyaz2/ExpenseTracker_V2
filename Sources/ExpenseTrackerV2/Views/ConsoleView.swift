@@ -15,21 +15,33 @@ final class ConsoleView {
     func start() {
         var shouldExit = false
 
+        ClearScreen.clear()  // clear screen when app starts
+
         while !shouldExit {
             printMenu()
-            let choice = readLine() ?? ""  // if user enters nothing we assign empty string
+            print("Enter your choice: ", terminator: "")
+            let choice = readLine() ?? ""
 
             switch choice {
             case "1":
+                ClearScreen.clear()
                 handleAddExpense()
             case "2":
+                ClearScreen.clear()
                 handleListExpenses()
             case "3":
+                ClearScreen.clear()
                 handleShowTotal()
             case "0":
                 shouldExit = true
             default:
-                print("Invalid option ... Please try again")
+                print("Invalid option. Please try again.")
+            }
+
+            if !shouldExit {
+                print("\nPress Enter to return to main menu...", terminator: "")
+                _ = readLine()
+                ClearScreen.clear()
             }
         }
     }
@@ -37,43 +49,53 @@ final class ConsoleView {
     // function to print the main menu
     private func printMenu() {
         print("")
-        print("===== Expense Tracker =====")
+        print("================================")
+        print("        EXPENSE TRACKER         ")
+        print("================================")
         print("1. Add Expense")
         print("2. List Expenses")
-        print("3. Show Total")
+        print("3. Show Total Expenses")
         print("0. Exit")
-        print("---------------------------")
-        print("Enter your choice:")
+        print("================================")
     }
 
     // function to handle adding new expense
     private func handleAddExpense() {
 
-        print("Enter expense amount:")
+        print("Enter expense amount: ", terminator: "")
         guard let amountInput = readLine(),
             let amount = Double(amountInput)
         else {
-            print("Invalid amount entered. Please try again.")
+            print("Invalid amount entered.")
             return
         }
 
-        print("Select expense category:")
-        for (index, category) in ExpenseCategory.allCases.enumerated() {  // iterating through all cases of ExpenseCategory enum for user to select
-            print("\(index + 1). \(category.rawValue)")  // displaying index starting from 1
+        print("\nSelect expense category:")
+        for (index, category) in ExpenseCategory.allCases.enumerated() {
+            print("\(index + 1). \(category.rawValue)")
+        }
+        print("0. Back to Main Menu")
+
+        print("Your choice: ", terminator: "")
+        guard let categoryInput = readLine(),
+            let categoryIndex = Int(categoryInput)
+        else {
+            print("Invalid input.")
+            return
         }
 
-        guard let categoryInput = readLine(),  // reading user input for category
-            let categoryIndex = Int(categoryInput),  // converting to Int because readLine returns String
-            categoryIndex > 0,
+        if categoryIndex == 0 { return }
+
+        guard categoryIndex > 0,
             categoryIndex <= ExpenseCategory.allCases.count
-        else {  // validating index is within range
-            print("Invalid category selected. Please try again.")
+        else {
+            print("Invalid category selected.")
             return
         }
 
-        let selectedCategory = ExpenseCategory.allCases[categoryIndex - 1]  // getting the selected category from enum cases array - adjusting for 0 based index
+        let selectedCategory = ExpenseCategory.allCases[categoryIndex - 1]
 
-        print("Enter note for expense(optional):")
+        print("Enter note (optional): ", terminator: "")
         let noteInput = readLine()
         let note = noteInput?.isEmpty == true ? nil : noteInput
 
@@ -81,40 +103,46 @@ final class ConsoleView {
             amount: amount,
             category: selectedCategory,
             note: note
-        )  // delegating to view model to add expense
+        )
 
         if success {
             print("Expense added successfully.")
         } else {
-            print("Failed to add expense. Amount must be greater than zero - check inputs.")
+            print("Failed to add expense.")
         }
     }
 
     // function to handle listing all expenses
     private func handleListExpenses() {
-        let expenses = viewModel.getAllExpenses()  // getting all expenses from the view model
+        let expenses = viewModel.getAllExpenses()
 
-        print("----- All Expenses -----")
+        print("\n========= ALL EXPENSES =========")
 
         if expenses.isEmpty {
             print("No expenses recorded yet.")
             return
         }
 
-        // iterating through all expenses and displaying them
-        for (index, expense) in expenses.enumerated() {  // enumerated to show index
-            print("\(index + 1).")
-            print("Amount: \(expense.amount)")
-            print("Category: \(expense.category.rawValue)")
-            print("Note: \(expense.note ?? "N/A")")
-            print("Date: \(expense.date)")
-            print("-------------------")
+        for (index, expense) in expenses.enumerated() {
+            print("\n\(index + 1).")
+            print("Amount   : \(expense.amount)")
+            print("Category : \(expense.category.rawValue)")
+            print("Note     : \(expense.note ?? "N/A")")
+            print("Date     : \(expense.date)")
+            print("--------------------------------")
         }
+
+        print("0. Back to Main Menu")
+        print("Enter choice: ", terminator: "")
+        _ = readLine()
     }
 
     // displaying total expenses at the end
     private func handleShowTotal() {
         let total = viewModel.getTotalExpense()
-        print("Total Expense Amount: \(total)")
+        print("\nTotal Expense Amount: \(total)")
+        print("0. Back to Main Menu")
+        print("Enter choice: ", terminator: "")
+        _ = readLine()
     }
 }
